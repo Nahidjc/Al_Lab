@@ -1,0 +1,1054 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "PerformanceBank.ipynb",
+      "provenance": [],
+      "collapsed_sections": [],
+      "authorship_tag": "ABX9TyP5BHnXTMv1XQ7DlNqD3iti",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Nahidjc/Al_Lab/blob/main/updated\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vyPuBoBJR38X",
+        "outputId": "c06a12b1-a8e1-4975-9acc-0d3b3b692d70"
+      },
+      "source": [
+        "from google.colab import drive\n",
+        "drive.mount('/content/gdrive')"
+      ],
+      "execution_count": 56,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Drive already mounted at /content/gdrive; to attempt to forcibly remount, call drive.mount(\"/content/gdrive\", force_remount=True).\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "aISof3L8R8sZ"
+      },
+      "source": [
+        "import pandas as pd\n",
+        "train_dataset = pd.read_csv('gdrive/My Drive/Colab Notebooks/Lab-PerformanceBank-Refund.csv')"
+      ],
+      "execution_count": 57,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 204
+        },
+        "id": "AzJyI-1LWJZX",
+        "outputId": "2c96f791-1f7c-43c2-b4c7-e569796bb51c"
+      },
+      "source": [
+        "train_dataset.head()"
+      ],
+      "execution_count": 58,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>ID</th>\n",
+              "      <th>Refund</th>\n",
+              "      <th>Marrital Status</th>\n",
+              "      <th>Inc.Tex</th>\n",
+              "      <th>Cheat</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Single</td>\n",
+              "      <td>12500</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>2</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>10000</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>70000</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4</td>\n",
+              "      <td>No</td>\n",
+              "      <td>Single</td>\n",
+              "      <td>120000</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5</td>\n",
+              "      <td>Yes</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>95000</td>\n",
+              "      <td>Yes</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   ID Refund Marrital Status  Inc.Tex Cheat\n",
+              "0   1    Yes          Single    12500    No\n",
+              "1   2     No         Married    10000    No\n",
+              "2   3    Yes         Married    70000    No\n",
+              "3   4     No          Single   120000    No\n",
+              "4   5    Yes         Married    95000   Yes"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 58
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "9qEPf_a5WNWQ",
+        "outputId": "913d477b-f6cb-4d85-8ceb-d67e46ae9860"
+      },
+      "source": [
+        "train_dataset.info()"
+      ],
+      "execution_count": 59,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "<class 'pandas.core.frame.DataFrame'>\n",
+            "RangeIndex: 16 entries, 0 to 15\n",
+            "Data columns (total 5 columns):\n",
+            " #   Column           Non-Null Count  Dtype \n",
+            "---  ------           --------------  ----- \n",
+            " 0   ID               16 non-null     int64 \n",
+            " 1   Refund           16 non-null     object\n",
+            " 2   Marrital Status  16 non-null     object\n",
+            " 3   Inc.Tex          16 non-null     int64 \n",
+            " 4   Cheat            16 non-null     object\n",
+            "dtypes: int64(2), object(3)\n",
+            "memory usage: 768.0+ bytes\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "iUQOl3uPXb0o"
+      },
+      "source": [
+        "Refund_mapping={'Yes':1,'No':0}"
+      ],
+      "execution_count": 60,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "BfAiefwIWgg4"
+      },
+      "source": [
+        "train_data = [train_dataset]\n",
+        "for train in train_data:\n",
+        "   train['Refund']=train['Refund'].map(Refund_mapping)"
+      ],
+      "execution_count": 61,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 204
+        },
+        "id": "9_-_A8aeXttB",
+        "outputId": "38297118-ce0e-4c5e-b065-e621b6a4152e"
+      },
+      "source": [
+        "train_dataset.head()"
+      ],
+      "execution_count": 62,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>ID</th>\n",
+              "      <th>Refund</th>\n",
+              "      <th>Marrital Status</th>\n",
+              "      <th>Inc.Tex</th>\n",
+              "      <th>Cheat</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>Single</td>\n",
+              "      <td>12500</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>2</td>\n",
+              "      <td>0</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>10000</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3</td>\n",
+              "      <td>1</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>70000</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4</td>\n",
+              "      <td>0</td>\n",
+              "      <td>Single</td>\n",
+              "      <td>120000</td>\n",
+              "      <td>No</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5</td>\n",
+              "      <td>1</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>95000</td>\n",
+              "      <td>Yes</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   ID  Refund Marrital Status  Inc.Tex Cheat\n",
+              "0   1       1          Single    12500    No\n",
+              "1   2       0         Married    10000    No\n",
+              "2   3       1         Married    70000    No\n",
+              "3   4       0          Single   120000    No\n",
+              "4   5       1         Married    95000   Yes"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 62
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "EdnIFe7SX-4n"
+      },
+      "source": [
+        "Marrital_mapping={'Married':1,'Single':0}"
+      ],
+      "execution_count": 63,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "kjnIEC8laJ7Q"
+      },
+      "source": [
+        "Cheat_mapping={'Yes':1,'No':0}"
+      ],
+      "execution_count": 64,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "ZY5K-gC_aTH9"
+      },
+      "source": [
+        "train_data = [train_dataset]\n",
+        "for train in train_data:\n",
+        "   train['Cheat']=train['Cheat'].map(Cheat_mapping)"
+      ],
+      "execution_count": 65,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 204
+        },
+        "id": "ISe6-v0Vab6X",
+        "outputId": "157f4eaa-185d-4d0b-826a-2af4f253f11c"
+      },
+      "source": [
+        "train_dataset.head()"
+      ],
+      "execution_count": 66,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>ID</th>\n",
+              "      <th>Refund</th>\n",
+              "      <th>Marrital Status</th>\n",
+              "      <th>Inc.Tex</th>\n",
+              "      <th>Cheat</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>Single</td>\n",
+              "      <td>12500</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>2</td>\n",
+              "      <td>0</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>10000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3</td>\n",
+              "      <td>1</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>70000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4</td>\n",
+              "      <td>0</td>\n",
+              "      <td>Single</td>\n",
+              "      <td>120000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5</td>\n",
+              "      <td>1</td>\n",
+              "      <td>Married</td>\n",
+              "      <td>95000</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   ID  Refund Marrital Status  Inc.Tex  Cheat\n",
+              "0   1       1          Single    12500      0\n",
+              "1   2       0         Married    10000      0\n",
+              "2   3       1         Married    70000      0\n",
+              "3   4       0          Single   120000      0\n",
+              "4   5       1         Married    95000      1"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 66
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "7CgQP_gNbq4A"
+      },
+      "source": [
+        "Marrital_mapping={'Married':1,'Single':0}\n",
+        "train_data = [train_dataset]\n",
+        "for train in train_data:\n",
+        "   train['Marrital Status']=train['Marrital Status'].map(Marrital_mapping)"
+      ],
+      "execution_count": 67,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 359
+        },
+        "id": "iU_hSqwNb-6n",
+        "outputId": "de974251-fee7-4193-972f-56555908cb01"
+      },
+      "source": [
+        "train_dataset.head(10)"
+      ],
+      "execution_count": 68,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>ID</th>\n",
+              "      <th>Refund</th>\n",
+              "      <th>Marrital Status</th>\n",
+              "      <th>Inc.Tex</th>\n",
+              "      <th>Cheat</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>12500</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>2</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>10000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>70000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>120000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>95000</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>5</th>\n",
+              "      <td>6</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>60000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>6</th>\n",
+              "      <td>7</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>220000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>7</th>\n",
+              "      <td>8</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>85000</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>8</th>\n",
+              "      <td>9</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>75000</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>9</th>\n",
+              "      <td>10</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>90000</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   ID  Refund  Marrital Status  Inc.Tex  Cheat\n",
+              "0   1       1                0    12500      0\n",
+              "1   2       0                1    10000      0\n",
+              "2   3       1                1    70000      0\n",
+              "3   4       0                0   120000      0\n",
+              "4   5       1                1    95000      1\n",
+              "5   6       0                0    60000      0\n",
+              "6   7       0                0   220000      0\n",
+              "7   8       0                0    85000      1\n",
+              "8   9       1                1    75000      0\n",
+              "9  10       1                1    90000      1"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 68
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1YLZoEg2sFQd",
+        "outputId": "c4e92a45-e541-4401-9daa-66a4b78905a6"
+      },
+      "source": [
+        "train_dataset.dtypes"
+      ],
+      "execution_count": 69,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "ID                 int64\n",
+              "Refund             int64\n",
+              "Marrital Status    int64\n",
+              "Inc.Tex            int64\n",
+              "Cheat              int64\n",
+              "dtype: object"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 69
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Fb9n25LXs_bF",
+        "outputId": "6d387694-a2ff-4c2b-e677-9f4e7ed5686a"
+      },
+      "source": [
+        "train_data = train_dataset.drop('Cheat',axis=1)\n",
+        "target = train_dataset['Cheat']\n",
+        "train_data.shape\n",
+        "target.shape"
+      ],
+      "execution_count": 70,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(16,)"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 70
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "NXQnP1JEvhAS",
+        "outputId": "0d920c65-4645-48d7-c187-674649c3be96"
+      },
+      "source": [
+        "train_data.isnull().sum()"
+      ],
+      "execution_count": 71,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "ID                 0\n",
+              "Refund             0\n",
+              "Marrital Status    0\n",
+              "Inc.Tex            0\n",
+              "dtype: int64"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 71
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "H0z3QKbgvrpG",
+        "outputId": "1b2662e3-1a08-403e-f505-87e7120da04b"
+      },
+      "source": [
+        "from sklearn.model_selection import train_test_split\n",
+        "x_train,x_test,y_train,y_test = train_test_split(train_data,target,test_size=0.2,random_state=42)\n",
+        "print(\"X_Train\",x_train.shape)\n",
+        "print(\"X_Test\",x_test.shape)"
+      ],
+      "execution_count": 72,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "X_Train (12, 4)\n",
+            "X_Test (4, 4)\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "KsJkQdHFwOUl",
+        "outputId": "1dbbcc3b-1564-4add-e9d4-316fff2ef7e5"
+      },
+      "source": [
+        "print(x_train)"
+      ],
+      "execution_count": 73,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "    ID  Refund  Marrital Status  Inc.Tex\n",
+            "13  14       1                1    95000\n",
+            "11  12       0                0    80000\n",
+            "8    9       1                1    75000\n",
+            "9   10       1                1    90000\n",
+            "2    3       1                1    70000\n",
+            "15  16       1                0    78000\n",
+            "4    5       1                1    95000\n",
+            "7    8       0                0    85000\n",
+            "10  11       0                0    55000\n",
+            "12  13       0                1    11000\n",
+            "3    4       0                0   120000\n",
+            "6    7       0                0   220000\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 204
+        },
+        "id": "9UlcUTzRwErw",
+        "outputId": "e919d599-5044-4966-9c8c-627810aab0a5"
+      },
+      "source": [
+        "train_data.head()"
+      ],
+      "execution_count": 74,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>ID</th>\n",
+              "      <th>Refund</th>\n",
+              "      <th>Marrital Status</th>\n",
+              "      <th>Inc.Tex</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>12500</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>2</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>10000</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>3</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>70000</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>4</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>120000</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>5</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>95000</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>"
+            ],
+            "text/plain": [
+              "   ID  Refund  Marrital Status  Inc.Tex\n",
+              "0   1       1                0    12500\n",
+              "1   2       0                1    10000\n",
+              "2   3       1                1    70000\n",
+              "3   4       0                0   120000\n",
+              "4   5       1                1    95000"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 74
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "YNRMjDzp3Stx"
+      },
+      "source": [
+        "from sklearn.tree import DecisionTreeClassifier"
+      ],
+      "execution_count": 75,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "Triw4A0U3W6D"
+      },
+      "source": [
+        "dt = DecisionTreeClassifier()"
+      ],
+      "execution_count": 76,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "HUjq8MGq4LzB",
+        "outputId": "4ef170c4-2428-4701-de13-3d23f5d41bba"
+      },
+      "source": [
+        "dt.fit(x_train,y_train)"
+      ],
+      "execution_count": 87,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',\n",
+              "                       max_depth=None, max_features=None, max_leaf_nodes=None,\n",
+              "                       min_impurity_decrease=0.0, min_impurity_split=None,\n",
+              "                       min_samples_leaf=1, min_samples_split=2,\n",
+              "                       min_weight_fraction_leaf=0.0, presort='deprecated',\n",
+              "                       random_state=None, splitter='best')"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 87
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "1FdI0QvR_1B_"
+      },
+      "source": [
+        "y_pred = dt.predict(x_test)"
+      ],
+      "execution_count": 88,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "l-nZ7YKoAOBI"
+      },
+      "source": [
+        " from sklearn.metrics import accuracy_score"
+      ],
+      "execution_count": 89,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dqwgPEdr_-zR",
+        "outputId": "8d156177-ffec-4a37-8a44-3454ac195d09"
+      },
+      "source": [
+        "print(\"Find Accuracy using Decission Tree:\",accuracy_score(y_test, y_pred)*100)"
+      ],
+      "execution_count": 93,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Find Accuracy using Decission Tree: 75.0\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "1qSYZvvmAeQ2"
+      },
+      "source": [
+        "from sklearn.ensemble import RandomForestClassifier"
+      ],
+      "execution_count": 81,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "UTeiNoBxAprz"
+      },
+      "source": [
+        "rf=RandomForestClassifier()\n",
+        "rf.fit(x_train,y_train)"
+      ],
+      "execution_count": 82,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "v7Zs8TSpA_DE"
+      },
+      "source": [
+        "y_prediction = rf.predict(x_test)"
+      ],
+      "execution_count": 91,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yG4ZLFhFBJjx",
+        "outputId": "5d0fdcab-8110-4936-db56-7ba8132e36f0"
+      },
+      "source": [
+        "print(\"Find Accuracy using Random Forest:\",accuracy_score(y_test,y_prediction)*100)"
+      ],
+      "execution_count": 94,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Find Accuracy using Random Forest: 75.0\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    }
+  ]
+}
